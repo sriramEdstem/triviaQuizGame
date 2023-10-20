@@ -1,7 +1,7 @@
-const Question = ({ currentQuestion }) => {
+const Question = ({ currentQuestion, count }) => {
   return (
     <>
-      <h3>{currentQuestion}</h3>
+      <h3>{count + 1 + ". " + currentQuestion}</h3>
     </>
   );
 };

@@ -62,7 +62,10 @@ const Quizzes = () => {
       <div style={{ display: "flex", flexDirection: "column", gap: "30px" }}>
         {currentQuestion && (
           <>
-            <Question currentQuestion={currentQuestion.question}></Question>
+            <Question
+              count={count}
+              currentQuestion={currentQuestion.question}
+            ></Question>
             <Options
               options={currentQuestion.options}
               correctanswer={currentQuestion.correctAnswer}
