@@ -30,7 +30,11 @@ const Options = ({
       }, 1000);
       setColorBtn("incorrect");
     }
-    console.log(selectedOption);
+    setSelectedOption(null);
+  };
+
+  const handleRadioChange = (e) => {
+    setSelectedOption(e.target.value);
   };
 
   return (
@@ -42,12 +46,9 @@ const Options = ({
               type="radio"
               value={item}
               name="quizOption"
-              checked={null}
-              onChange={(e) => {
-                setSelectedOption(e.target.value);
-              }}
+              checked={selectedOption === item}
+              onChange={handleRadioChange}
             />
-
             {item}
           </div>
         ))}
