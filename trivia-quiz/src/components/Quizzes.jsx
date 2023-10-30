@@ -1,10 +1,6 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import Question from "./Question";
 import Options from "./Options";
-
-const baseURL =
-  "https://opentdb.com/api.php?amount=10&category=27&difficulty=easy&type=multiple";
 
 const shuffleArray = (array) => {
   const shuffledArray = [...array];
@@ -15,35 +11,13 @@ const shuffleArray = (array) => {
   return shuffledArray;
 };
 
-const Quizzes = () => {
-  const [quiz, setQuiz] = useState([]);
+const Quizzes = ({ quiz }) => {
   const [mappedQuiz, setMappedQuiz] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [count, setCount] = useState(0);
   const [correctAnswerCount, setCorrectAnswerCount] = useState(0);
+  const [quizComplete, setQuizComplete] = useState(false);
 
-  const handleOptions = (mappedQuiz, setCurrentQuestion, setCount) => {
-    setTimeout(() => {
-      setCount(count + 1);
-      setCurrentQuestion(mappedQuiz[count + 1]);
-    }, 1000);
-
-    return;
-  };
-
-  useEffect(() => {
-    axios
-      .get(baseURL)
-      .then((response) => {
-        setQuiz(response.data.results);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
-  function refreshPage() {
-    window.location.reload(false);
-  }
   useEffect(() => {
     const mappedData = quiz.map((quizItem) => {
       const options = [quizItem.correct_answer, ...quizItem.incorrect_answers];
@@ -57,40 +31,56 @@ const Quizzes = () => {
     setMappedQuiz(mappedData);
     setCurrentQuestion(mappedData[count]);
   }, [quiz]);
-  if (count <= 9) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "30px" }}>
-        {currentQuestion && (
-          <>
-            <Question
-              count={count}
-              currentQuestion={currentQuestion.question}
-            ></Question>
-            <Options
-              options={currentQuestion.options}
-              correctanswer={currentQuestion.correctAnswer}
-              handleOptions={handleOptions}
-              mappedQuiz={mappedQuiz}
-              setCurrentQuestion={setCurrentQuestion}
-              setCount={setCount}
-              correctAnswerCount={correctAnswerCount}
-              setCorrectAnswerCount={setCorrectAnswerCount}
-            ></Options>
-          </>
-        )}
-      </div>
-    );
-  } else {
+
+  const handleOptions = () => {
+    if (count < 9) {
+      setTimeout(() => {
+        setCount(count + 1);
+        setCurrentQuestion(mappedQuiz[count + 1]);
+      }, 1000);
+    } else {
+      setQuizComplete(true);
+    }
+  };
+
+  const handlePlayAgain = () => {
+    setCount(0);
+    setCorrectAnswerCount(0);
+    setQuizComplete(false);
+    setCurrentQuestion(mappedQuiz[0]);
+  };
+
+  if (quizComplete) {
     return (
       <div>
         <h1>Complete</h1>
-        <h2>your score is {correctAnswerCount}/10</h2>
+        <h2>Your score is {correctAnswerCount}/10</h2>
         <div>
-          <button onClick={refreshPage}>Play Again?</button>
+          <button onClick={handlePlayAgain}>Play Again</button>
         </div>
       </div>
     );
   }
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "30px" }}>
+      {currentQuestion && (
+        <>
+          <Question count={count} currentQuestion={currentQuestion.question} />
+          <Options
+            options={currentQuestion.options}
+            correctanswer={currentQuestion.correctAnswer}
+            handleOptions={handleOptions}
+            mappedQuiz={mappedQuiz}
+            setCurrentQuestion={setCurrentQuestion}
+            setCount={setCount}
+            correctAnswerCount={correctAnswerCount}
+            setCorrectAnswerCount={setCorrectAnswerCount}
+          />
+        </>
+      )}
+    </div>
+  );
 };
 
 export default Quizzes;

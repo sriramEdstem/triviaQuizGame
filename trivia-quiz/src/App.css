@@ -32,6 +32,10 @@
     transform: rotate(360deg);
   }
 }
+.options {
+  padding: 10px 20px;
+  border-radius: 10px;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {

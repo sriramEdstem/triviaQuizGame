@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 const Options = ({
   options,
@@ -17,31 +17,45 @@ const Options = ({
     handleOptions(mappedQuiz, setCurrentQuestion, setCount);
   };
 
-  const handleAnswer = (selectedOption) => {
+  const handleAnswer = () => {
     if (correctanswer === selectedOption) {
       setCorrectAnswerCount(correctAnswerCount + 1);
-      setTimeout(() => {
-        setColorBtn(null);
-      }, 1000);
       setColorBtn("correct");
     } else {
-      setTimeout(() => {
-        setColorBtn(null);
-      }, 1000);
       setColorBtn("incorrect");
     }
-    setSelectedOption(null);
+    setTimeout(() => {
+      setColorBtn(null);
+    }, 1000);
   };
 
   const handleRadioChange = (e) => {
     setSelectedOption(e.target.value);
   };
 
+  const getOptionStyle = (option) => {
+    if (selectedOption === option) {
+      return {
+        backgroundColor:
+          colorBtn === "correct"
+            ? "green"
+            : colorBtn === "incorrect"
+            ? "red"
+            : "",
+      };
+    }
+    return {};
+  };
+
   return (
     <>
       <div style={{ display: "flex", gap: "30px" }}>
         {options.map((item, index) => (
-          <div key={index}>
+          <div
+            key={index}
+            className={` Buttons ${getOptionStyle(item)} options`}
+            style={getOptionStyle(item)}
+          >
             <input
               type="radio"
               value={item}
@@ -54,11 +68,12 @@ const Options = ({
         ))}
       </div>
       <button
-        className={`Buttons${colorBtn}`}
+        style={{ width: "100px", marginRight: "auto", marginLeft: "auto" }}
+        className={`Buttons ${colorBtn}`}
         disabled={!selectedOption}
-        onClick={(e) => {
+        onClick={() => {
           handleOptionss(mappedQuiz, setCurrentQuestion, setCount);
-          handleAnswer(selectedOption);
+          handleAnswer();
         }}
       >
         Submit
